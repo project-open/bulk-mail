@@ -47,7 +47,7 @@ namespace eval bulk_mail {
     } {
         returns the top most bulk_mail package_id
     } {
-        return [util_memoize {bulk_mail::package_id_not_cached}]
+        return [util_memoize [list bulk_mail::package_id_not_cached]]
     }
 
     ad_proc -private package_id_not_cached {
@@ -63,7 +63,7 @@ namespace eval bulk_mail {
     } {
         returns the base url of the top most bulk_mail package
     } {
-        return [util_memoize {bulk_mail::url_not_cached}]
+        return [util_memoize [listbulk_mail::url_not_cached]]
     }
 
     ad_proc -private url_not_cached {
