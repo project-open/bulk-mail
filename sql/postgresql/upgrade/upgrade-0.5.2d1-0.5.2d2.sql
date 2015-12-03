@@ -1,16 +1,14 @@
 --
--- bulk_mail logic
---
--- @author <a href="mailto:yon@openforce.net">yon@openforce.net</a>
--- @version $Id$
+-- Upgrade for 0.5.2d2 
 --
 
 
--- old define_function_args('bulk_mail__new','bulk_mail_id,package_id,send_date,date_format,status;pending,from_addr,subject,reply_to,extra_headers,message,query,creation_date;now(),creation_user,creation_ip,context_id')
+
+-- added
+
+-- old define_function_args('bulk_mail__new','bulk_mail_id;null,package_id,send_date;null,date_format;to "YYYY MM DD HH24 MI SS",status;to "pending",from_addr,subject;null,reply_to;null,extra_headers;null,message,query,creation_date;now(),creation_user;null,creation_ip;null,context_id;null')
 -- new
 select define_function_args('bulk_mail__new','bulk_mail_id;null,package_id,send_date;null,date_format;to "YYYY MM DD HH24 MI SS",status;pending,from_addr,subject;null,reply_to;null,extra_headers;null,message,query,creation_date;now(),creation_user;null,creation_ip;null,context_id;null');
-
-
 
 
 --
@@ -21,14 +19,14 @@ CREATE OR REPLACE FUNCTION bulk_mail__new(
    bulk_mail__new__package_id integer,
    bulk_mail__new__send_date varchar,         -- default to null
    bulk_mail__new__date_format varchar,       -- default to "YYYY MM DD HH24 MI SS"
-   bulk_mail__new__status varchar,            -- default to "pending" -- default 'pending'
+   bulk_mail__new__status varchar,            -- default to "pending"
    bulk_mail__new__from_addr varchar,
    bulk_mail__new__subject varchar,           -- default to null
    bulk_mail__new__reply_to varchar,          -- default to null
    bulk_mail__new__extra_headers varchar,     -- default to null
    bulk_mail__new__message text,
    bulk_mail__new__query varchar,
-   bulk_mail__new__creation_date timestamptz, -- default to now() -- default 'now()'
+   bulk_mail__new__creation_date timestamptz, -- default to now()
    bulk_mail__new__creation_user integer,     -- default to null
    bulk_mail__new__creation_ip varchar,       -- default to null
    bulk_mail__new__context_id integer         -- default to null
@@ -79,32 +77,6 @@ BEGIN
      bulk_mail__new__extra_headers, bulk_mail__new__message, bulk_mail__new__query);
 
     return v_bulk_mail_id;
-
-END;
-
-$$ LANGUAGE plpgsql;
-
-
-
--- added
-select define_function_args('bulk_mail__delete','bulk_mail_id');
-
---
--- procedure bulk_mail__delete/1
---
-CREATE OR REPLACE FUNCTION bulk_mail__delete(
-   bulk_mail__delete__bulk_mail_id integer
-) RETURNS integer AS $$
-DECLARE
-BEGIN
-
-    delete
-    from bulk_mail_messages
-    where bulk_mail_messages.bulk_mail_id = bulk_mail__delete__bulk_mail_id;
-
-    perform acs_object__delete(bulk_mail__delete__bulk_mail_id);
-
-    return 0;
 
 END;
 

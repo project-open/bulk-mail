@@ -38,30 +38,32 @@ create table bulk_mail_messages (
                                 not null,
     status                      varchar(100)
                                 default 'pending'
+                                constraint bm_messages_status_ck
+                                check (status in ('pending', 'cancelled', 'sent'))
                                 constraint bm_messages_status_nn
                                 not null
                                 
 );
 
 -- create a new object type
-create function inline_0 ()
-returns integer as '
-begin
+CREATE OR REPLACE FUNCTION inline_0 () RETURNS integer AS $$
+BEGIN
     perform acs_object_type__create_type(
-        ''bulk_mail_message'',
-        ''Bulk Mail Message'',
-        ''Bulk Mail Messages'',
-        ''acs_object'',
-        ''bulk_mail_messages'',
-        ''bulk_mail_id'',
-        ''bulk_mail'',
-        ''f'',
+        'bulk_mail_message',
+        'Bulk Mail Message',
+        'Bulk Mail Messages',
+        'acs_object',
+        'bulk_mail_messages',
+        'bulk_mail_id',
+        'bulk_mail',
+        'f',
         null,
-        ''acs_object__default_name''
+        'acs_object__default_name'
     );
 
     return null;
-end;' language 'plpgsql';
+END;
+$$ LANGUAGE plpgsql;
 
 select inline_0();
 
